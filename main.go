@@ -5,12 +5,12 @@ import (
 	"net/http"
 
 	"github.com/natanfds/vtt_odisseia/handlers"
-	"github.com/natanfds/vtt_odisseia/models"
 	"github.com/natanfds/vtt_odisseia/repositories"
+	"github.com/natanfds/vtt_odisseia/services"
 )
 
 func main() {
-	db, err := models.StartDatabase()
+	db, err := services.StartDatabase()
 	if err != nil {
 		fmt.Println("Error at start database:", err)
 		return
