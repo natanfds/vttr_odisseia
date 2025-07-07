@@ -5,27 +5,19 @@ import (
 	"gorm.io/gorm"
 )
 
-type database struct {
-	db *gorm.DB
-}
-
-func (d *database) StartDatabase() error {
+func StartDatabase() (*gorm.DB, error) {
 	modelsToMigrate := []interface{}{
 		&User{},
 	}
 
 	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	for _, model := range modelsToMigrate {
 		db.AutoMigrate(model)
 	}
 
-	d.db = db
-
-	return nil
+	return db, nil
 }
-
-var Database = &database{}
