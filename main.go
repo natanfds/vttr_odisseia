@@ -11,10 +11,17 @@ import (
 
 func main() {
 	db, err := services.StartDatabase()
+
 	if err != nil {
 		fmt.Println("Error at start database:", err)
 		return
 	}
+	err = services.CacheService.Start()
+	if err != nil {
+		fmt.Println("Error ar start cache", err)
+		return
+	}
+
 	repositories.InitRepositories(db)
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -24,5 +31,9 @@ func main() {
 	http.HandleFunc("/login", handlers.LoginHandler)
 
 	fmt.Println("Servidor iniciado em http://localhost:8080")
-	http.ListenAndServe(":8080", nil)
+	err = http.ListenAndServe(":8080", nil)
+	if err != nil {
+		fmt.Println("Error at start server:", err)
+		return
+	}
 }
