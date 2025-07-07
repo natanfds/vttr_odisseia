@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"gorm.io/gorm"
+
 	"github.com/natanfds/vtt_odisseia/dtos"
 	"github.com/natanfds/vtt_odisseia/repositories"
 	"github.com/natanfds/vtt_odisseia/utils"
@@ -41,6 +43,26 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	//Pegando token do banco se tiver
+	dbToken, err := repositories.AuthTokenRepository.GetToken(user)
+	if err != nil && err != gorm.ErrRecordNotFound {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("Internal server error!"))
+		return
+	}
+
+	willUpdateToken := false
+	if dbToken != "" {
+		_, err := utils.ValidateJWT(dbToken)
+		if err == nil {
+			w.WriteHeader(http.StatusOK)
+			w.Write([]byte(dbToken))
+			return
+		} else {
+			willUpdateToken = true
+		}
+	}
+
 	id := strconv.Itoa(int(user.ID))
 	generatedToken, err := utils.GenerateJWT(id)
 	if err != nil {
@@ -49,11 +71,20 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = repositories.AuthTokenRepository.CreateToken(user, generatedToken)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("Internal server error!"))
-		return
+	if willUpdateToken {
+		err = repositories.AuthTokenRepository.UpdateToken(generatedToken, user)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte("Internal server error!"))
+			return
+		}
+	} else {
+		err = repositories.AuthTokenRepository.CreateToken(user, generatedToken)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte("Internal server error!"))
+			return
+		}
 	}
 
 	w.WriteHeader(http.StatusOK)

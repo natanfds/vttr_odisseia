@@ -1,8 +1,6 @@
 package repositories
 
 import (
-	"fmt"
-
 	"gorm.io/gorm"
 
 	"github.com/natanfds/vtt_odisseia/dtos"
@@ -28,8 +26,6 @@ func (u *StructUserRepository) CreateUser(data dtos.CreateUser) error {
 	}
 	result := u.db.Create(&user)
 
-	fmt.Println("ä")
-
 	if result.Error != nil {
 		return result.Error
 	}
@@ -46,6 +42,9 @@ func (u *StructUserRepository) GetUser(data dtos.GetUser) (models.User, error) {
 	}
 	if data.Email != "" {
 		searchArgs.Email = data.Email
+	}
+	if data.Username != "" {
+		searchArgs.Username = data.Username
 	}
 	result := u.db.Where(searchArgs).First(&users)
 

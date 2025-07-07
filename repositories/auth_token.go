@@ -26,8 +26,26 @@ func (a *StructAuthTokenRepository) CreateToken(user models.User, generatedToken
 	return nil
 }
 
-func (a *StructAuthTokenRepository) GetToken() {}
+func (a *StructAuthTokenRepository) GetToken(user models.User) (string, error) {
+	var token models.AuthToken
 
-func (a *StructAuthTokenRepository) UpdateToken() {}
+	result := a.db.Where("user_id = ?", user.ID).First(&token)
+
+	if result.Error != nil {
+		return "", result.Error
+	}
+
+	return token.Token, nil
+}
+
+func (a *StructAuthTokenRepository) UpdateToken(newToken string, user models.User) error {
+	result := a.db.Model(&models.AuthToken{}).Where("user_id = ?", user.ID).Update("token", newToken)
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}
 
 func (a *StructAuthTokenRepository) DeleteToken() {}
