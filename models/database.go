@@ -8,6 +8,7 @@ import (
 func StartDatabase() (*gorm.DB, error) {
 	modelsToMigrate := []interface{}{
 		&User{},
+		&AuthToken{},
 	}
 
 	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})

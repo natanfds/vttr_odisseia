@@ -21,6 +21,7 @@ func main() {
 		fmt.Fprintf(w, "🎪")
 	})
 	http.HandleFunc("/account", handlers.CreateAccountHandler)
+	http.HandleFunc("/login", handlers.LoginHandler)
 
 	fmt.Println("Servidor iniciado em http://localhost:8080")
 	http.ListenAndServe(":8080", nil)
