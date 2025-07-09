@@ -4,6 +4,8 @@ import (
 	"time"
 
 	"github.com/go-redis/redis"
+
+	"github.com/natanfds/vtt_odisseia/configs"
 )
 
 type cacheService struct {
@@ -12,9 +14,9 @@ type cacheService struct {
 
 func (c *cacheService) Start() error {
 	c.rdb = redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
-		Password: "",
-		DB:       0,
+		Addr:     configs.REDIS_ADDR,
+		Password: configs.REDIS_PASS,
+		DB:       configs.REDIS_DB,
 	})
 
 	err := c.rdb.Ping().Err()

@@ -4,6 +4,7 @@ import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 
+	"github.com/natanfds/vtt_odisseia/configs"
 	"github.com/natanfds/vtt_odisseia/models"
 )
 
@@ -13,7 +14,7 @@ func StartDatabase() (*gorm.DB, error) {
 		&models.AuthToken{},
 	}
 
-	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open(configs.DB_ADDRESS), &gorm.Config{})
 	if err != nil {
 		return nil, err
 	}

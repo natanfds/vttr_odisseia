@@ -26,10 +26,10 @@ func (a *StructAuthTokenRepository) CreateToken(user models.User, generatedToken
 	return nil
 }
 
-func (a *StructAuthTokenRepository) GetToken(user models.User) (string, error) {
+func (a *StructAuthTokenRepository) GetTokenByID(userID string) (string, error) {
 	var token models.AuthToken
 
-	result := a.db.Where("user_id = ?", user.ID).First(&token)
+	result := a.db.Where("user_id = ?", userID).First(&token)
 
 	if result.Error != nil {
 		return "", result.Error

@@ -4,14 +4,16 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
+
+	"github.com/natanfds/vtt_odisseia/configs"
 )
 
-var jwKey = []byte("secret")
+var jwKey = []byte(configs.JWT_SECRET)
 
 func GenerateJWT(userId string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"user_id": userId,
-		"exp":     time.Now().Add(7 * 24 * time.Hour).Unix(),
+		"exp":     time.Now().Add(configs.TOKEN_EXPIRATION).Unix(),
 	})
 
 	return token.SignedString(jwKey)
