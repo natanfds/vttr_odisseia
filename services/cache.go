@@ -14,9 +14,9 @@ type cacheService struct {
 
 func (c *cacheService) Start() error {
 	c.rdb = redis.NewClient(&redis.Options{
-		Addr:     configs.REDIS_ADDR,
-		Password: configs.REDIS_PASS,
-		DB:       configs.REDIS_DB,
+		Addr:     configs.ENV.RedisAddr,
+		Password: configs.ENV.RedisPass,
+		DB:       configs.ENV.RedisDb,
 	})
 
 	err := c.rdb.Ping().Err()

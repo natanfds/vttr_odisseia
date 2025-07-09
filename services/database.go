@@ -14,7 +14,7 @@ func StartDatabase() (*gorm.DB, error) {
 		&models.AuthToken{},
 	}
 
-	db, err := gorm.Open(sqlite.Open(configs.DB_ADDRESS), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open(configs.ENV.DbFilePath), &gorm.Config{})
 	if err != nil {
 		return nil, err
 	}

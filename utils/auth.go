@@ -8,12 +8,13 @@ import (
 	"github.com/natanfds/vtt_odisseia/configs"
 )
 
-var jwKey = []byte(configs.JWT_SECRET)
+var jwKey = []byte(configs.ENV.JwtSecret)
 
 func GenerateJWT(userId string) (string, error) {
+	tokenExpiration := time.Duration(configs.ENV.TokenExpirationDays) * 24 * time.Hour
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"user_id": userId,
-		"exp":     time.Now().Add(configs.TOKEN_EXPIRATION).Unix(),
+		"exp":     time.Now().Add(tokenExpiration).Unix(),
 	})
 
 	return token.SignedString(jwKey)
