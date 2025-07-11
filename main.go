@@ -31,7 +31,7 @@ func main() {
 		fmt.Println(configs.ERR_START_DB, err)
 		return
 	}
-	err = services.CacheService.Start()
+	err = services.RedisService.Start()
 	if err != nil {
 		fmt.Println(configs.ERR_START_CACHE, err)
 		return

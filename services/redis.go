@@ -8,11 +8,11 @@ import (
 	"github.com/natanfds/vtt_odisseia/configs"
 )
 
-type cacheService struct {
+type redisService struct {
 	rdb *redis.Client
 }
 
-func (c *cacheService) Start() error {
+func (c *redisService) Start() error {
 	c.rdb = redis.NewClient(&redis.Options{
 		Addr:     configs.ENV.RedisAddr,
 		Password: configs.ENV.RedisPass,
@@ -23,7 +23,7 @@ func (c *cacheService) Start() error {
 	return err
 }
 
-func (c *cacheService) Get(key string) (string, error) {
+func (c *redisService) Get(key string) (string, error) {
 	val, err := c.rdb.Get(key).Result()
 
 	if err != nil {
@@ -33,12 +33,12 @@ func (c *cacheService) Get(key string) (string, error) {
 	return val, nil
 }
 
-func (c *cacheService) Set(key string, value string, ttl time.Duration) error {
+func (c *redisService) Set(key string, value string, ttl time.Duration) error {
 	return c.rdb.Set(key, value, ttl).Err()
 }
 
-func (c *cacheService) Delete(key string) error {
+func (c *redisService) Delete(key string) error {
 	return c.rdb.Del(key).Err()
 }
 
-var CacheService cacheService = cacheService{}
+var RedisService redisService = redisService{}
