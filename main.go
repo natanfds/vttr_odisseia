@@ -41,18 +41,23 @@ func main() {
 	repositories.InitRepositories(db)
 	port := configs.ENV.ApiPort
 
-	mux := http.NewServeMux()
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	serverMux := http.NewServeMux()
+
+	serverMux.HandleFunc(configs.ROUTE_HOME, func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "🎪")
 	})
-	mux.HandleFunc("/account", handlers.CreateAccountHandler)
-	mux.HandleFunc("/login", handlers.LoginHandler)
+	serverMux.HandleFunc(configs.ROUTE_ACCOUNT, handlers.CreateAccountHandler)
+	serverMux.HandleFunc(configs.ROUTE_LOGIN, handlers.LoginHandler)
 
 	fmt.Println(configs.MSG_START_SERVER, port)
 
 	server := &http.Server{
-		Addr:    ":" + port,
-		Handler: middlewares.RateLimiterMiddleware(mux),
+		Addr: ":" + port,
+		Handler: middlewares.ChainMiddlewares(
+			serverMux,
+			middlewares.RateLimiterMiddleware,
+			middlewares.AuthMiddleware,
+		),
 	}
 
 	err = server.ListenAndServe()

@@ -14,7 +14,7 @@ func RateLimiterMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		route := r.URL.Path
 		ip := r.RemoteAddr
-		key := route + ":" + ip
+		key := configs.ROOT_KEY_REDIS_RATE_LIMIT + ":" + route + ":" + ip
 		route_limits := configs.ROUTE_LIMITS()
 
 		if amount, exists := route_limits[route]; !exists {
