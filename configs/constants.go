@@ -12,3 +12,13 @@ const (
 	MSG_START_SERVER    = "Server started at http://localhost:"
 	ERR_START_SERVER    = "Error at start server:"
 )
+
+var route_limits = map[string]int{
+	"/":        10,
+	"/account": 50,
+	"/login":   10,
+}
+
+func ROUTE_LIMITS() map[string]int {
+	return route_limits
+}

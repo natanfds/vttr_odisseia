@@ -8,6 +8,7 @@ import (
 
 	"github.com/natanfds/vtt_odisseia/configs"
 	"github.com/natanfds/vtt_odisseia/handlers"
+	"github.com/natanfds/vtt_odisseia/middlewares"
 	"github.com/natanfds/vtt_odisseia/repositories"
 	"github.com/natanfds/vtt_odisseia/services"
 )
@@ -38,16 +39,23 @@ func main() {
 	}
 
 	repositories.InitRepositories(db)
+	port := configs.ENV.ApiPort
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "🎪")
 	})
-	http.HandleFunc("/account", handlers.CreateAccountHandler)
-	http.HandleFunc("/login", handlers.LoginHandler)
+	mux.HandleFunc("/account", handlers.CreateAccountHandler)
+	mux.HandleFunc("/login", handlers.LoginHandler)
 
-	port := configs.ENV.ApiPort
 	fmt.Println(configs.MSG_START_SERVER, port)
-	err = http.ListenAndServe(":"+port, nil)
+
+	server := &http.Server{
+		Addr:    ":" + port,
+		Handler: middlewares.RateLimiterMiddleware(mux),
+	}
+
+	err = server.ListenAndServe()
 	if err != nil {
 		fmt.Println(configs.ERR_START_SERVER, err)
 		return
