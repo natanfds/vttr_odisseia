@@ -48,6 +48,7 @@ func main() {
 	})
 	serverMux.HandleFunc(configs.ROUTE_ACCOUNT, handlers.CreateAccountHandler)
 	serverMux.HandleFunc(configs.ROUTE_LOGIN, handlers.LoginHandler)
+	serverMux.HandleFunc(configs.ROUTE_LOGOUT, handlers.LogoutHandler)
 
 	fmt.Println(configs.MSG_START_SERVER, port)
 

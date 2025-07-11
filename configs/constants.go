@@ -14,6 +14,7 @@ const (
 	ROOT_KEY_REDIS_RATE_LIMIT = "rate_limit"
 
 	ROUTE_LOGIN   = "/login"
+	ROUTE_LOGOUT  = "/logout"
 	ROUTE_ACCOUNT = "/account"
 	ROUTE_HOME    = "/"
 )

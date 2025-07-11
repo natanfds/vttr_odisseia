@@ -48,4 +48,12 @@ func (a *StructAuthTokenRepository) UpdateToken(newToken string, user models.Use
 	return nil
 }
 
-func (a *StructAuthTokenRepository) DeleteToken() {}
+func (a *StructAuthTokenRepository) DeleteToken(userId string) error {
+	result := a.db.Delete(&models.AuthToken{}, "user_id = ?", userId)
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}
